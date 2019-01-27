@@ -3,11 +3,19 @@ import ContentEditable from "react-contenteditable";
 import sanitize from "sanitize-html";
 //import InputBase from "@material-ui/core/InputBase";
 import { parser, SyntaxError } from "./parser";
+import * as Geocoder from "./Geocoder";
+import { FeatureCollection } from "geojson";
 
-export interface IProps {}
+export interface IProps {
+  className?: string;
+  onDataUpdate?: (fc: FeatureCollection) => void;
+}
 
 export interface IState {
-  value: string;
+  raw: string;
+  ast: any;
+  fc: FeatureCollection;
+  error: any;
 }
 
 export default class I extends React.Component<IProps, IState> {
@@ -17,7 +25,10 @@ export default class I extends React.Component<IProps, IState> {
     super(props);
 
     this.state = {
-      value: "This is the header"
+      raw: "This is the header",
+      ast: {},
+      fc: Geocoder.EMPTY_FC,
+      error: undefined
     };
   }
 
@@ -26,37 +37,62 @@ export default class I extends React.Component<IProps, IState> {
 
     const opts: any = {
       allowedTags: ["br"],
-      allowedAttributes: {},
-    //   transformTags: {
-    //     div: function(tagName: any, attribs: any, text: string) {
-    //       console.log("sanitizing", tagName, text);
-    //       return text + "\r\n";
-    //     },
-    //     br: ";"
-    //   }
+      allowedAttributes: {}
+      //   transformTags: {
+      //     div: function(tagName: any, attribs: any, text: string) {
+      //       console.log("sanitizing", tagName, text);
+      //       return text + "\r\n";
+      //     },
+      //     br: ";"
+      //   }
     };
 
     const cleanText = sanitize(text, opts);
 
-    console.log("raw text ", text);
-    console.log("clean ", cleanText);
+    //console.log("raw text ", text);
+    //console.log("clean ", cleanText);
     try {
-      const data = parser(text.trim() + "\n");
-      console.log(data);
+      const ast = parser(text);
+      console.log("AST ", ast);
+      Geocoder.ast_to_geojson(ast).then(_fc => {
+        console.log("FC ", _fc.features.length);
+        this.setState(
+          { raw: text, ast: ast, fc: _fc, error: undefined },
+          () => {
+            if (this.props.onDataUpdate) {
+              console.log("callback");
+              this.props.onDataUpdate(_fc);
+            }
+          }
+        );
+      });
     } catch (error) {
       console.log(error);
+      this.setState({ raw: text, error: error });
     }
-    this.setState({ value: text });
+  };
+
+  Error = (p: any) => {
+    const msg = p.error ? p.error.message : "None";
+    return <div>Error: {msg}</div>;
   };
 
   public render() {
+    const { className } = this.props;
+    const clz = className ? { className: className } : " ";
+
     return (
-      <textarea
-        ref={this.contentEditable}
-        value={this.state.value} // innerHTML of the editable div
-        disabled={false} // use true to disable editing
-        onChange={this.handleChange} // handle innerHTML change
+      <div {...clz}>
+        <textarea
+          rows={20}
+          cols={100}
+          ref={this.contentEditable}
+          value={this.state.raw} // innerHTML of the editable div
+          disabled={false} // use true to disable editing
+          onChange={this.handleChange} // handle innerHTML change
         />
+        <this.Error error={this.state.error} />
+      </div>
     );
   }
 }
