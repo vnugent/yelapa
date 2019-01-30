@@ -1,6 +1,6 @@
 {
   "name": "@mappandas/yelapa",
-  "version": "0.0.7",
+  "version": "0.0.9",
   "description": "SLoML parser",
   "main": "dist/index.js",
   "repository": "git@github.com:vnugent/yelapa.git",
@@ -34,5 +34,5 @@
     "lib",
     "dist"
   ],
-  "types": "index.d.ts"
+  "types": "dist/index.d.ts"
 }
