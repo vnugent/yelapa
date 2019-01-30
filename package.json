@@ -1,6 +1,6 @@
 {
   "name": "@mappandas/yelapa",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "SLoML parser",
   "main": "dist/index.js",
   "repository": "git@github.com:vnugent/yelapa.git",
@@ -26,7 +26,7 @@
     "prebuild": "rm -rf dist/*",
     "build": "tsc && cp lib/parser.js dist/",
     "prepublish": "NODE_ENV=production && yarn build",
-    "predemo": "mkdir -p demo/node_modules/@mappandas/yelapa || true && cp dist/index.js dist/index.d.ts demo/node_modules/@mappandas/yelapa/dist",
+    "predemo": "mkdir -p demo/node_modules/@mappandas/yelapa || true && cp package.json dist/index.js dist/index.d.ts demo/node_modules/@mappandas/yelapa/dist",
     "gen": "node node_modules/pegjs/bin/pegjs -o lib/parser.js grammar.pegjs",
     "test": "jest --config ./jest.config.js"
   },
