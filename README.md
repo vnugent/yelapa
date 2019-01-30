@@ -1,8 +1,10 @@
 # Yelapa
 Yelapa is a parser for Simple Location Markdown Language (SloML).  The library can be used to turn human-readable list of addresses, point of interests or countries into Geojson data.
 
+Note: Mapbox API key is required
+
 # How it works
-SolML has the following convention
+SloML (pronounced `slow-mel`) has the following convention
 ```
 This is a short description  
 --
