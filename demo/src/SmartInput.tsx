@@ -1,10 +1,14 @@
 import * as React from "react";
 import ContentEditable from "react-contenteditable";
+import Yelapa from "@mappandas/yelapa";
 import sanitize from "sanitize-html";
 //import InputBase from "@material-ui/core/InputBase";
-import { parser, SyntaxError } from "./parser";
-import * as Geocoder from "./Geocoder";
 import { FeatureCollection } from "geojson";
+
+export const EMPTY_FC: FeatureCollection = {
+  type: "FeatureCollection",
+  features: []
+};
 
 export interface IProps {
   className?: string;
@@ -20,14 +24,16 @@ export interface IState {
 
 export default class I extends React.Component<IProps, IState> {
   contentEditable = React.createRef<HTMLTextAreaElement>();
-
+  geocoder = new Yelapa(
+    "pk.eyJ1IjoibWFwcGFuZGFzIiwiYSI6ImNqcDdzbW12aTBvOHAzcW82MGg0ZTRrd3MifQ.MYiNJHklgMkRzapAKuTQNg"
+  );
   constructor(props: IProps) {
     super(props);
 
     this.state = {
       raw: "This is the header",
       ast: {},
-      fc: Geocoder.EMPTY_FC,
+      fc: EMPTY_FC,
       error: undefined
     };
   }
@@ -51,25 +57,23 @@ export default class I extends React.Component<IProps, IState> {
 
     //console.log("raw text ", text);
     //console.log("clean ", cleanText);
-    try {
-      const ast = parser(text);
-      console.log("AST ", ast);
-      Geocoder.ast_to_geojson(ast).then(_fc => {
-        console.log("FC ", _fc.features.length);
+    this.geocoder.parse(
+      text,
+      (_ast: any, _fc: FeatureCollection) => {
         this.setState(
-          { raw: text, ast: ast, fc: _fc, error: undefined },
+          { raw: text, ast: _ast, fc: _fc, error: undefined },
           () => {
             if (this.props.onDataUpdate) {
-              console.log("callback");
+              console.log("callback", JSON.stringify(_fc));
               this.props.onDataUpdate(_fc);
             }
           }
         );
-      });
-    } catch (error) {
-      console.log(error);
-      this.setState({ raw: text, error: error });
-    }
+      },
+      (e:any) => {
+        this.setState({ raw: text, error: e });
+      }
+    );
   };
 
   Error = (p: any) => {
