@@ -962,10 +962,10 @@
   resolved "https://registry.yarnpkg.com/@mapbox/whoots-js/-/whoots-js-3.1.0.tgz#497c67a1cef50d1a2459ba60f315e448d2ad87fe"
   integrity sha512-Es6WcD0nO5l+2BOQS4uLfNPYQaNDfbot3X1XUoloz+x0mPDS3eeORZJl06HXjwBG1fOGwCRnzK88LMdxKRrd6Q==
 
-"@mappandas/yelapa@^0.0.11":
-  version "0.0.11"
-  resolved "https://registry.yarnpkg.com/@mappandas/yelapa/-/yelapa-0.0.11.tgz#a76084dbc4febc53782e782d17af718ce8afcff1"
-  integrity sha512-yPYNFjahykpCReVVSzK6vponG5N8SvDiEyb3apVy1GEt9Jhz2Ox//9DTYI6593zQPg6SGDDiv564WFfJgmjn/w==
+"@mappandas/yelapa@^0.0.16":
+  version "0.0.16"
+  resolved "https://registry.yarnpkg.com/@mappandas/yelapa/-/yelapa-0.0.16.tgz#8b25d48ed0493f406580657da80ea1cd0ea98cd2"
+  integrity sha512-ElaxiSCO+ApSyU0hQpJ3etb/or5MONPkrRblWnU+7I61tt+JvkWvFi3xRwkckOarbYQXkYMdT+fyYeOSPHgwMw==
   dependencies:
     axios "0.18.0"
     pegjs "0.10.0"
