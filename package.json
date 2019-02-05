@@ -1,6 +1,6 @@
 {
   "name": "@mappandas/yelapa",
-  "version": "0.0.11",
+  "version": "0.0.13",
   "description": "SLoML parser",
   "main": "dist/index.js",
   "repository": "git@github.com:vnugent/yelapa.git",
@@ -8,14 +8,15 @@
   "license": "Apache-2.0",
   "private": false,
   "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.3.1",
     "@types/axios": "^0.14.0",
     "@types/geojson": "^7946.0.5",
-    "@types/jest": "^23.3.13",
     "@types/pegjs": "^0.10.1",
     "babel-jest": "^24.0.0",
     "browserify": "^16.2.3",
-    "jest": "23.6.0",
-    "ts-jest": "^23.10.5",
+    "jest": "^24.0.0",
+    "lodash": "^4.17.11",
     "typescript": "^3.2.4"
   },
   "dependencies": {
@@ -26,9 +27,9 @@
     "prebuild": "rm -rf dist/*",
     "build": "tsc && cp lib/parser.js dist/",
     "prepublish": "NODE_ENV=production && yarn build && cp dist/index.d.ts .",
-    "predemo": "mkdir -p demo/node_modules/@mappandas/yelapa || true && cp package.json dist/index.js dist/index.d.ts demo/node_modules/@mappandas/yelapa/dist",
+    "predemo": "mkdir -p demo/node_modules/@mappandas/yelapa || true && cp package.json dist/*.js demo/node_modules/@mappandas/yelapa/dist && cp dist/index.d.ts demo/node_modules/@mappandas/yelapa",
     "gen": "node node_modules/pegjs/bin/pegjs -o lib/parser.js grammar.pegjs",
-    "test": "jest --config ./jest.config.js"
+    "test": "jest"
   },
   "files": [
     "lib",
