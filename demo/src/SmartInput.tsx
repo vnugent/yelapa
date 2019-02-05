@@ -6,6 +6,12 @@ import sanitize from "sanitize-html";
 //import InputBase from "@material-ui/core/InputBase";
 import { FeatureCollection } from "geojson";
 
+const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_TOKEN ? process.env.REACT_APP_MAPBOX_TOKEN : "";
+
+if (MAPBOX_TOKEN === "") {
+    console.log("## Warning: REACT_APP_MAPBOX_TOKEN env not defined at build time ##")
+}
+
 export const EMPTY_FC: FeatureCollection = {
   type: "FeatureCollection",
   features: []
@@ -25,9 +31,7 @@ export interface IState {
 
 export default class I extends React.Component<IProps, IState> {
   contentEditable = React.createRef<HTMLTextAreaElement>();
-  geocoder = new Yelapa.Geocoder(
-    "pk.eyJ1IjoibWFwcGFuZGFzIiwiYSI6ImNqcDdzbW12aTBvOHAzcW82MGg0ZTRrd3MifQ.MYiNJHklgMkRzapAKuTQNg"
-  );
+  geocoder = new Yelapa.Geocoder(MAPBOX_TOKEN);
   constructor(props: IProps) {
     super(props);
 
@@ -58,21 +62,19 @@ export default class I extends React.Component<IProps, IState> {
 
     //console.log("raw text ", text);
     //console.log("clean ", cleanText);
-    this.geocoder.parse(text).then(({ast, fc}) => {
-        this.setState(
-          { raw: text, ast: ast, fc: fc, error: undefined },
-          () => {
-            if (this.props.onDataUpdate) {
-              console.log("callback", ast, JSON.stringify(fc));
-              this.props.onDataUpdate(fc);
-            }
+    this.geocoder
+      .parse(text)
+      .then(({ ast, fc }) => {
+        this.setState({ raw: text, ast: ast, fc: fc, error: undefined }, () => {
+          if (this.props.onDataUpdate) {
+            console.log("callback", ast, JSON.stringify(fc));
+            this.props.onDataUpdate(fc);
           }
-        );
-      }
-      ).catch((e: any) => {
+        });
+      })
+      .catch((e: any) => {
         this.setState({ raw: text, error: e });
-      }
-    );
+      });
   };
 
   Error = (p: any) => {
