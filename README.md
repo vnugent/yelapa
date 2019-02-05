@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/vnugent/yelapa.svg?branch=master)](https://travis-ci.org/vnugent/yelapa)
 # Yelapa
 Yelapa is a parser for Simple Location Markdown Language (SloML).  The library can be used to turn human-readable list of addresses, point of interests or countries into Geojson data.
 
