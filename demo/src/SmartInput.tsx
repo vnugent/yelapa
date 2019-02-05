@@ -1,6 +1,7 @@
 import * as React from "react";
 import ContentEditable from "react-contenteditable";
-import Yelapa from "@mappandas/yelapa";
+import * as Yelapa from "@mappandas/yelapa";
+//import {FeatureCollection2} from "@mappandas/yelapa/Types"
 import sanitize from "sanitize-html";
 //import InputBase from "@material-ui/core/InputBase";
 import { FeatureCollection } from "geojson";
@@ -24,7 +25,7 @@ export interface IState {
 
 export default class I extends React.Component<IProps, IState> {
   contentEditable = React.createRef<HTMLTextAreaElement>();
-  geocoder = new Yelapa(
+  geocoder = new Yelapa.Geocoder(
     "pk.eyJ1IjoibWFwcGFuZGFzIiwiYSI6ImNqcDdzbW12aTBvOHAzcW82MGg0ZTRrd3MifQ.MYiNJHklgMkRzapAKuTQNg"
   );
   constructor(props: IProps) {
@@ -57,20 +58,18 @@ export default class I extends React.Component<IProps, IState> {
 
     //console.log("raw text ", text);
     //console.log("clean ", cleanText);
-    this.geocoder.parse(
-      text,
-      (_ast: any, _fc: FeatureCollection) => {
+    this.geocoder.parse(text).then(({ast, fc}) => {
         this.setState(
-          { raw: text, ast: _ast, fc: _fc, error: undefined },
+          { raw: text, ast: ast, fc: fc, error: undefined },
           () => {
             if (this.props.onDataUpdate) {
-              console.log("callback", JSON.stringify(_fc));
-              this.props.onDataUpdate(_fc);
+              console.log("callback", ast, JSON.stringify(fc));
+              this.props.onDataUpdate(fc);
             }
           }
         );
-      },
-      (e:any) => {
+      }
+      ).catch((e: any) => {
         this.setState({ raw: text, error: e });
       }
     );

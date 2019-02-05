@@ -1,51 +1,65 @@
-body = header:paragraph EOL+ rest:item+ {
+body = EOL* title:line_of_text desc:mlines rest:item+ {
   return {
      type: "body",
-     header: header,
-     rest: rest
+     title: title,
+     summary: desc,
+     entries: rest
   
   }
 }
 
-item = item_full / item_name_addr / item_name
+global_summary "Summary" = mlines
 
-item_full = LIST_MARKER EOL+ name:paragraph EOL address:paragraph EOL description:paragraph EOL+ {
+item = item_full / item_name
+
+item_full = LIST_MARKER name:name description:loc_description {
   return {
     type: "entry",
     name: name,
-    address: address,
     description: description
   };
 } 
 
-item_name = LIST_MARKER EOL+ name:paragraph EOL {
+item_name = LIST_MARKER name:name? {
   return {
     type: "entry",
     name: name
   };
 }
 
-item_name_addr = LIST_MARKER EOL name:paragraph EOL+ address:paragraph EOL+ {
+
+name "Name, Address or Point-of-interest" = line_of_text
+
+loc_description "Location description" =  mlines / line_of_text
+
+
+mlines "paragraph" = EOL* ls:line_of_text* {
+  var z = ls.map(l => l.value);
   return {
-    type: "entry",
-    name: name,
-    address: address
-  };
+    type: "p",
+    value: z
+  }
 }
 
-paragraph "paragraph" = _ p:word+ _ {
-  return { 
-     type: "paragraph",
-     value: p.join("")
-  };
+line_of_text "line" = ws:word* EOL+ {
+   return {
+     type: "line",
+     value: ws.join('') 
+   }
 }
 
-word = [a-zA-Z\u1D400-\u1D419 ]
+words = ws:word* {
+  var s = ws.join(" ");
+  return ws;
+}
+word = c:[a-zA-Z\u1D400-\u1D419,!@#\$%\^&\*\(\)\+\.\/\? ]  {
+return c;
+}
 
-LIST_MARKER "List marker character --" = "--"
+LIST_MARKER "List marker character --" = EOL* "--" EOL+
 
-EOL "END_OF_LINE" = "\r\n" / "\r" / "\n" {
-return "<lb>";
+EOL "a new line" = "\r\n" / "\r" / "\n" {
+return "lb";
 }
 
 ws = [ \t]

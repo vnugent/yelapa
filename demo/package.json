@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@mappandas/yelapa": "^0.0.11",
+    "@mappandas/yelapa": "^0.0.16",
     "@material-ui/core": "^3.9.0",
     "@turf/bbox": "^6.0.1",
     "@turf/helpers": "^6.1.4",
